@@ -1,0 +1,56 @@
+import os
+import sys
+import unittest
+import pytest
+from selenium import webdriver
+# from scripts.pages import page
+from scripts.pages import page
+
+WEB_DRIVER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "webdrivers")
+sys.path.append(WEB_DRIVER_PATH)
+
+
+class LoginWorkFlow(unittest.TestCase):
+
+    def setUp(self):
+        self.driver = webdriver.Chrome(os.path.join(WEB_DRIVER_PATH, "chromedriver.exe"))
+        self.driver.get("http://automationpractice.com")
+
+
+    def test_log_in_with_incorrect_username_and_incorrect_password(self):
+        main_page = page.MainPage(self.driver)
+        assert main_page.is_title_matches_main_page()
+        main_page.click_sign_menu()
+        auth_page = page.AuthenticationPage(self.driver)
+        assert auth_page.is_title_matches_auth_page()
+        auth_page.emailAddressInputElement = "bademail@email.com"
+        auth_page.emailPasswordInputElement = "badpassword"
+        auth_page.click_sign_in_button()
+        assert 'Authentication failed.' == auth_page.get_banner_alert_message()
+
+    def test_log_in_with_empty_username_and_empty_password(self):
+        main_page = page.MainPage(self.driver)
+        assert main_page.is_title_matches_main_page()
+        main_page.click_sign_menu()
+        auth_page = page.AuthenticationPage(self.driver)
+        assert auth_page.is_title_matches_auth_page()
+        auth_page.emailAddressInputElement = ""
+        auth_page.emailPasswordInputElement = ""
+        auth_page.click_sign_in_button()
+        assert 'An email address required.' == auth_page.get_banner_alert_message()
+
+    def test_log_in_handles_case_sensitive(self):
+        main_page = page.MainPage(self.driver)
+        assert main_page.is_title_matches_main_page()
+        main_page.click_sign_menu()
+        auth_page = page.AuthenticationPage(self.driver)
+        assert auth_page.is_title_matches_auth_page()
+        auth_page.emailAddressInputElement = "jasun.hall@gmail.com"
+        auth_page.emailPasswordInputElement = "Ptest092020#".swapcase()
+
+        auth_page.click_sign_in_button()
+        assert 'Authentication failed.' == auth_page.get_banner_alert_message()
+
+    def tearDown(self):
+        self.driver.close()
+
