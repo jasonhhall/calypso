@@ -39,6 +39,8 @@ class MainPage(BasePage):
         else:
             return False
 
+    def 
+
 class AuthenticationPage(BasePage):
 
     emailAddressInputElement = EmailAddressInputElement()
@@ -46,6 +48,12 @@ class AuthenticationPage(BasePage):
 
     def is_title_matches_auth_page(self):
         return "Login - My Store" in self.driver.title
+
+    def is_signin_visible(self):
+        if self.driver.find_element(*AuthenticationPageLocators.SIGN_IN_MENU):
+            return True
+        else:
+            return False
 
     def is_signout_visible(self):
         if self.driver.find_element(*AuthenticationPageLocators.SIGN_OUT_MENU):
