@@ -59,7 +59,8 @@ class MainPage(BasePage):
     def addItemToCart(self, itemName ):
         products = self.driver.find_elements(*MainPageLocators.ITEM_LIST)
         for product in products:
-            if itemName == product.find_element(*MainPageLocators.PRODUCT_NAME).text:
+
+            if itemName == product.get_attribute("title"):  
                 action=ActionChains(self.driver)
                 action.move_to_element(product).perform()
                 addToCartButton = wait(self.driver, 10).until(EC.element_to_be_clickable(MainPageLocators.ADD_TO_CART_BUTTON))
@@ -111,9 +112,12 @@ class ShoppingCartSummaryPage(BasePage):
     def is_title_matches_shopping_cart_summary_page(self):
         return "Order - My Store" in self.driver.title
 
-    # def getUnitPrice(self):
-    #     element = self.driver.find_element(*ShoppingCartSummaryPageLocators.UNIT_PRICE)
-    #     return element.text
+    def getItemsDescription(self):
+        elements = self.driver.find_elements(*ShoppingCartSummaryPageLocators.ITEMS_DESC)
+        for element in elements:
+            name = element.find_element(By.CLASS_NAME, 'product-name')
+            if name.text =='Faded Short Sleeve T-shirts':
+                return name
 
     def click_checkout_button(self):
         element = self.driver.find_element(*ShoppingCartSummaryPageLocators.PROCEED_TO_CHECKOUT_BUTTON)

@@ -3,8 +3,10 @@ from selenium.webdriver.common.by import By
 class MainPageLocators(object):
     SIGN_IN_MENU = (By.CLASS_NAME, 'login')
     SIGN_OUT_MENU = (By.CLASS_NAME, 'logout')
-    ITEM_LIST = (By.XPATH, '//*[@id="homefeatured"]/li')
-    PRODUCT_NAME = (By.CLASS_NAME, 'product-name')
+   
+    ITEM_LIST = (By.XPATH, '//*[@id="homefeatured"]/li/div/div[2]/h5/a')
+    # ITEM_LIST = (By.CSS_SELECTOR, '#homefeatured li a.product_img_link')
+    # ITEM_TITLE = (By.XPATH, '//div/div[2]/h5/a')
     ADD_TO_CART_BUTTON = (By.CLASS_NAME, 'ajax_add_to_cart_button')
     POPUP_PANEL = (By.ID, 'layer_cart')
     CONFIRMATION = (By.XPATH, '//*[@id="layer_cart"]/div[1]/div[1]/h2')
@@ -22,6 +24,8 @@ class ShoppingCartSummaryPageLocators(object):
     PROCEED_TO_CHECKOUT_BUTTON = (By.XPATH, '//*[@id="center_column"]/p[2]/a[1]')
     DELETE_ITEM = (By.XPATH, '//*[@id="cart_summary"]/tbody/tr/td[7]')
     QTY = (By.XPATH, '//*[@id="cart_summary"]/tbody/tr/td[5]')
+    ITEMS_DESC = (By.XPATH, '//*[@id="cart_summary"]/tbody/tr/td[2]')
+    ITEM_NAME = (By.TAG_NAME, 'a')
 
 
 class AddressPageLocators(object):

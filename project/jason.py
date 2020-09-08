@@ -17,40 +17,12 @@ def addItemToCart( driver, itemName):
     elements = driver.find_elements(By.XPATH, '//*[@id="homefeatured"]/li')
     for element in elements:
         if itemName == element.find_element(By.CLASS_NAME, 'product-name').text:
-            # button = element.find_element(By.CLASS_NAME, 'ajax_add_to_cart_button')
-            # print(button.text)
-            # button.click()
-            # button.click()
             action=ActionChains(driver)
             action.move_to_element(element).perform()
             addToCartButton = wait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'ajax_add_to_cart_button')))
             addToCartButton.click()
-
-        
-            # proceed_to_checkout = driver.find_element(By.CLASS_NAME, 'button-container')
-            # proceed_to_checkout_button  = wait(driver, 10).until(EC.element_to_be_clickable((By.TAG_NAME, 'a')))
-
-
-            # proceed_to_checkout_button  =  proceed_to_checkout.find_element(By.TAG_NAME, 'a')
-            # addToCartPopup = wait(driver, 10).until(EC.visibility_of_element_located((By.ID, 'layer_cart')))
-            # addToCartPopup.find_element(By.CLASS_NAME, 'continue')
-            # continue_shopping = addToCartPopup.find_element(By.CLASS_NAME, 'continue')
-            # continue_shopping.click()
-         
-            # proceed_to_checkout_button.click()
-          
-            # message = addToCartPopup.find_element(By.TAG_NAME, 'h2')
-            # print(message.text)
-           
-            
-            # continue_shopping.click()
-
-            # proceed_to_checkout = addToCartPopup.find_element(By.TAG_NAME, 'a')
-            # proceed_to_checkout.click()
-
-
-
-
+            proceed_to_checkout_button = wait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="layer_cart"]/div[1]/div[2]/div[4]/a')))
+            proceed_to_checkout_button.click()
 
 
 # for element in elements:
