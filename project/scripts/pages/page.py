@@ -1,5 +1,11 @@
 from scripts.element import BasePageElement
-from scripts.locators import MainPageLocators, AuthenticationPageLocators
+from scripts.locators import MainPageLocators, AuthenticationPageLocators, ShoppingCartSummaryPageLocators, AddressPageLocators 
+from scripts.locators import ShippingPageLocators, PaymentPageLocators, OrderConforimationPageLocators
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait as wait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+import time
 
 
 class EmailAddressInputElement(BasePageElement):
@@ -39,10 +45,28 @@ class MainPage(BasePage):
         else:
             return False
 
-    def 
+    def proceedToCheckout(self):
+        popupWindow = self.driver.find_element(*MainPageLocators.POPUP_PANEL)
+        proceed_to_checkout_button = wait(self.driver, 10).until(EC.element_to_be_clickable(MainPageLocators.PROCEED_TO_CHECKOUT_BUTTON))
+        proceed_to_checkout_button.click()
+
+    def continueShopping(self):
+        popupWindow = self.driver.find_element(*MainPageLocators.POPUP_PANEL)
+        continue_shopping = wait(self.driver, 10).until(EC.element_to_be_clickable(MainPageLocators.CONTINUE_SHOPPING))
+        continue_shopping.click()
+        
+
+    def addItemToCart(self, itemName ):
+        products = self.driver.find_elements(*MainPageLocators.ITEM_LIST)
+        for product in products:
+            if itemName == product.find_element(*MainPageLocators.PRODUCT_NAME).text:
+                action=ActionChains(self.driver)
+                action.move_to_element(product).perform()
+                addToCartButton = wait(self.driver, 10).until(EC.element_to_be_clickable(MainPageLocators.ADD_TO_CART_BUTTON))
+                addToCartButton.click()
+
 
 class AuthenticationPage(BasePage):
-
     emailAddressInputElement = EmailAddressInputElement()
     emailPasswordInputElement = EmailPasswordInputElement()
 
@@ -81,3 +105,55 @@ class AuthenticationPage(BasePage):
     def get_banner_alert_message(self):
         element = self.driver.find_element(*AuthenticationPageLocators.ALERT_BANNER)
         return element.text
+
+class ShoppingCartSummaryPage(BasePage):
+
+    def is_title_matches_shopping_cart_summary_page(self):
+        return "Order - My Store" in self.driver.title
+
+    # def getUnitPrice(self):
+    #     element = self.driver.find_element(*ShoppingCartSummaryPageLocators.UNIT_PRICE)
+    #     return element.text
+
+    def click_checkout_button(self):
+        element = self.driver.find_element(*ShoppingCartSummaryPageLocators.PROCEED_TO_CHECKOUT_BUTTON)
+        element.click()
+
+class AddressPage(BasePage):
+
+    def click_checkout_button(self):
+        element = self.driver.find_element(*AddressPageLocators.PROCEED_TO_CHECKOUT_BUTTON)
+        element.click()
+
+class ShippingPage(BasePage):
+
+    def click_checkout_button(self):
+        element = self.driver.find_element(*ShippingPageLocators.PROCEED_TO_CHECKOUT_BUTTON).click()
+
+    def click_terms_of_service(self):
+        element = self.driver.find_element(*ShippingPageLocators.TOS)
+        element.click()
+
+class PaymentPage(BasePage):
+    
+    def payByBankWire(self):
+        self.driver.find_element(*PaymentPageLocators.PAY_BY_BANK_WIRE).click()
+
+    def payByCheck(self):
+        self.driver.find_element(*PaymentPageLocators.PAY_BY_CHECK).click()
+
+    def chooseDifferntMethodOfPayment(self):
+        self.driver.find_element(*PaymentPageLocators.OTHER_PAYMENTS_METHODS).click()
+
+    def confirmOrder(self):
+        element = self.driver.find_element(*PaymentPageLocators.CONFIRM_ORDER).click()
+
+class OrderConfirmationPage(BasePage):
+    
+    # def getOrderReference(self):
+    #     element = self.driver.find_element(*OrderConforimationPageLocators.ORDER_CONFRIMATION_MESSAGE)
+    #     return element.text
+
+    def backToOrders(self):
+        element = self.driver.find_element(*OrderConforimationPageLocators.BACK_TO_ORDERS).click()
+
