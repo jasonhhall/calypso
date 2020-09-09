@@ -38,6 +38,10 @@ class AddressPageLocators(object):
     USE_SAME_ADDRESS = (By.ID, 'addressesAreEquals')
     ORDER_MESSAGE = (By.XPATH, '//*[@id="ordermsg"]/textarea')
     ADD_NEW_ADDRESS = (By.XPATH, '//*[@id="center_column"]/form/div/p/a')
+    SAVE_ADDRESS = (By.ID, 'submitAddress')
+    NEW_ADDRESS_STATE = (By.ID, 'id_state')
+    UPDATE_DELIVERY_ADDRESS = (By.CSS_SELECTOR , '#address_invoice li.address_update a')
+    UPDATE_BILLING_ADDRESS = (By.CSS_SELECTOR , '#address_invoice  li.address_update a')
    
 
 class ShippingPageLocators(object):

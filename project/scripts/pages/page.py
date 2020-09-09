@@ -35,9 +35,6 @@ class NewAddressAddress2(BasePageElement):
 class NewAddressCity(BasePageElement):
     locator = 'city'
 
-class NewAddressState(BasePageElement):
-    locator = 'id_state'
-
 class NewAddressPostalCode(BasePageElement):
     locator = 'postcode'
 
@@ -101,8 +98,8 @@ class MainPage(BasePage):
 
 
 class AuthenticationPage(BasePage):
-    emailAddressInputElement = EmailAddressInputElement()
-    emailPasswordInputElement = EmailPasswordInputElement()
+    email_address_input_element = EmailAddressInputElement()
+    email_password_input_element = EmailPasswordInputElement()
 
     def is_title_matches_auth_page(self):
         return "Login - My Store" in self.driver.title
@@ -184,6 +181,18 @@ class ShoppingCartSummaryPage(BasePage):
 class AddressPage(BasePage):
 
     add_order_comment = OrderComment()
+    new_address_firstname = NewAddressFirstName()
+    new_address_lastname = NewAddressLastName()
+    new_address_company = NewAddressCompany()
+    new_address_address1 = NewAddressAddress1()
+    new_address_address2 = NewAddressAddress2()
+    new_address_city = NewAddressCity()
+   
+    new_address_postal_code = NewAddressPostalCode()
+    new_address_home_phone = NewAddressHomePhone()
+    new_address_mobile_phone = NewAddressMobilePhone()
+    new_address_additional = NewAddressAdditional()
+    new_address_title = NewAddressTitle()
 
     def proceedToCheckout(self):
         self.driver.find_element(*AddressPageLocators.PROCEED_TO_CHECKOUT_BUTTON).click()
@@ -200,28 +209,29 @@ class AddressPage(BasePage):
         select = Select(self.driver.find_element(*AddressPageLocators.DELIVERY_ADDRESS_DROP_DOWN))  
         select.select_by_visible_text(addressLabel)
 
+    def newAddressState(self, stateName):
+        select = Select(self.driver.find_element(*AddressPageLocators.NEW_ADDRESS_STATE))  
+        select.select_by_visible_text(stateName)
+
     def useDeliveryAddressAsBillingAddress(self, bool_flag):
         checkbox = self.driver.find_element(*AddressPageLocators.USE_SAME_ADDRESS)
         if checkbox.get_attribute("checked") == "true":
             if not bool_flag:
                 checkbox.click()
-
-    # def getDeliveryAddress(self):
-
-    # def getDeliveryCityStateZip(self):
-
-    # def getDeliveryCountry(self):
-
-    # def updateDeliveryAddress(self):
     
-    def addNewAddress(self, firstName, lastName, company,address1, address2, city, state, zip, homePhone, mobilePhone, AdditionalInfo, addressTitle):
-        # if homePhone :
-        #     if mobilePhone:
-        #         raise Exception("You must register at least one phone number.") 
+    def clickAddNewAddressButton(self):
         self.driver.find_element(*AddressPageLocators.ADD_NEW_ADDRESS).click()
-        
-    
 
+    def saveAddress(self):
+        self.driver.find_element(*AddressPageLocators.SAVE_ADDRESS).click()
+
+    def clickUpdateDeliveryAddress(self):
+        self.driver.find_element(*AddressPageLocators.UPDATE_DELIVERY_ADDRESS).click()
+
+    def clickUpdateBillingAddress(self):
+        self.driver.find_element(*AddressPageLocators.UPDATE_BILLING_ADDRESS).click()
+        
+        
 
 class ShippingPage(BasePage):
 
@@ -231,13 +241,16 @@ class ShippingPage(BasePage):
     def click_terms_of_service(self):
         self.driver.find_element(*ShippingPageLocators.TOS).click()
 
+    def mustAgreeToTOSDisplay(self):
+        return "You must agree to the terms of service before continuing." in self.driver.page_source
+
 class PaymentPage(BasePage):
     
     def payByBankWire(self):
         self.driver.find_element(*PaymentPageLocators.PAY_BY_BANK_WIRE).click()
 
     def payByCheck(self):
-        self.driver.find_element(*PaymentPageLocators.PAY_BY_CHECK).click()
+        wait(self.driver, 10).until(EC.element_to_be_clickable(PaymentPageLocators.PAY_BY_CHECK)).click()
 
     def chooseDifferntMethodOfPayment(self):
         self.driver.find_element(*PaymentPageLocators.OTHER_PAYMENTS_METHODS).click()
@@ -247,7 +260,12 @@ class PaymentPage(BasePage):
 
 class OrderConfirmationPage(BasePage):
     
-    def getOrderReference(self):
+    def getOrderReferenceForBankWire(self):
+        temp = self.driver.find_element(*OrderConforimationPageLocators.ORDER_BOX).get_attribute("innerHTML")
+        data = [item.strip() for item in temp.split("<br>")]
+        return data[5].split()[-8]
+
+    def getOrderReferenceForCheck(self):
         temp = self.driver.find_element(*OrderConforimationPageLocators.ORDER_BOX).get_attribute("innerHTML")
         data = [item.strip() for item in temp.split("<br>")]
         return data[3].split()[-1].strip('.')
