@@ -1,6 +1,6 @@
 from scripts.element import BasePageElement
 from scripts.locators import MainPageLocators, AuthenticationPageLocators, ShoppingCartSummaryPageLocators, AddressPageLocators 
-from scripts.locators import ShippingPageLocators, PaymentPageLocators, OrderConforimationPageLocators, OrderHistoryPageLocators
+from scripts.locators import ShippingPageLocators, PaymentPageLocators, OrderConforimationPageLocators, OrderHistoryPageLocators, OrderSummaryPageLocators
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.support.ui import Select
@@ -126,13 +126,10 @@ class AuthenticationPage(BasePage):
         return "An email address required." in self.driver.page_source
 
     def click_signin_button(self):
-        element = wait(self.driver, 10).until(EC.element_to_be_clickable(AuthenticationPageLocators.SIGN_IN_BUTTON))
-        # self.driver.find_element(*AuthenticationPageLocators.SIGN_IN_BUTTON)
-        element.click()
+        wait(self.driver, 10).until(EC.element_to_be_clickable(AuthenticationPageLocators.SIGN_IN_BUTTON)).click()
 
     def click_signout_button(self):
-        element = self.driver.find_element(*AuthenticationPageLocators.SIGN_OUT_MENU)
-        element.click()
+        self.driver.find_element(*AuthenticationPageLocators.SIGN_OUT_MENU).click()
 
     def get_banner_alert_message(self):
         element = self.driver.find_element(*AuthenticationPageLocators.ALERT_BANNER)
@@ -256,8 +253,12 @@ class PaymentPage(BasePage):
     def chooseDifferntMethodOfPayment(self):
         self.driver.find_element(*PaymentPageLocators.OTHER_PAYMENTS_METHODS).click()
 
-    def confirmOrder(self):
-        element = self.driver.find_element(*PaymentPageLocators.CONFIRM_ORDER).click()
+   
+
+class OrderSummaryPage(BasePage):
+     def confirmOrder(self):
+        element = self.driver.find_element(*OrderSummaryPageLocators.CONFIRM_ORDER).click()
+
 
 class OrderConfirmationPage(BasePage):
     

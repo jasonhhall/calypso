@@ -52,7 +52,9 @@ class PaymentPageLocators(object):
     PAY_BY_BANK_WIRE = (By.XPATH, '//*[@id="HOOK_PAYMENT"]/div[1]/div/p/a')
     PAY_BY_CHECK = (By.XPATH, '//*[@id="HOOK_PAYMENT"]/div[2]/div/p/a')
     OTHER_PAYMENTS_METHODS = (By.XPATH, '//*[@id="cart_navigation"]/a')
-    CONFIRM_ORDER = (By.XPATH, '//*[@id="cart_navigation"]/button')
+
+class OrderSummaryPageLocators(object):
+      CONFIRM_ORDER = (By.XPATH, '//*[@id="cart_navigation"]/button')
 
 class OrderConforimationPageLocators(object):
     BACK_TO_ORDERS = (By.XPATH, '//*[@id="center_column"]/p/a')
