@@ -11,9 +11,13 @@ EMAIL_ADDRESS = os.getenv("EMAIL")
 EMAIL_PASSWORD = os.getenv("PASSWORD")
 
 ## TEST CASES TEST DATA
+DELIVERY_ADDRESS_LABEL = 'Home address'
+ORDER_COMMENT = 'Please leave package on the front porch.'
 ITEM1_DESCRIPTION = 'Blouse'
 ITEM1_PRICE = '$27.00'
 ITEM1_SIZE = 'S'
 ITEM1_COLOR = 'Black'
-DELIVERY_ADDRESS_LABEL = 'Home Address'
-ORDER_COMMENT = 'Please leave package on the front porch.'
+ITEM2_DESCRIPTION = 'Faded Short Sleeve T-shirts'
+ITEM2_PRICE = '$16.51'
+ITEM2_SIZE = 'S'
+ITEM2_COLOR = 'Orange'
