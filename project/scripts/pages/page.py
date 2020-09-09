@@ -1,6 +1,6 @@
 from scripts.element import BasePageElement
 from scripts.locators import MainPageLocators, AuthenticationPageLocators, ShoppingCartSummaryPageLocators, AddressPageLocators 
-from scripts.locators import ShippingPageLocators, PaymentPageLocators, OrderConforimationPageLocators, OrderHistoryPageLocators, OrderSummaryPageLocators
+from scripts.locators import ShippingPageLocators, PaymentPageLocators, OrderConfirmationPageLocators, OrderHistoryPageLocators, OrderSummaryPageLocators
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.support.ui import Select
@@ -8,57 +8,70 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import time
 
+
 class EmailAddressInputElement(BasePageElement):
     locator = 'email'
+
 
 class EmailPasswordInputElement(BasePageElement):
     locator = 'passwd'
 
+
 class OrderComment(BasePageElement):
     locator = 'message'
+
 
 class NewAddressFirstName(BasePageElement):
     locator = 'firstname'
 
+
 class NewAddressLastName(BasePageElement):
     locator = 'lastname'
+
 
 class NewAddressCompany(BasePageElement):
     locator = 'company'
 
+
 class NewAddressAddress1(BasePageElement):
     locator = 'address1'
+
 
 class NewAddressAddress2(BasePageElement):
     locator = 'address2'
 
+
 class NewAddressCity(BasePageElement):
     locator = 'city'
+
 
 class NewAddressPostalCode(BasePageElement):
     locator = 'postcode'
 
+
 class NewAddressHomePhone(BasePageElement):
     locator = 'phone'
+
 
 class NewAddressMobilePhone(BasePageElement):
     locator = 'phone_mobile'
 
+
 class NewAddressAdditional(BasePageElement):
     locator = 'other'
+
 
 class NewAddressTitle(BasePageElement):
     locator = 'alias'
 
+
 class BasePage(object):
     """Base class to initialize the base page that will be called from all pages"""
-
     def __init__(self, driver):
         self.driver = driver
 
 
 class MainPage(BasePage):
-
     def is_title_matches_main_page(self):
         return "My Store" in self.driver.title
 
@@ -76,25 +89,27 @@ class MainPage(BasePage):
         else:
             return False
 
-    def proceedToCheckout(self):
-        popupWindow = self.driver.find_element(*MainPageLocators.POPUP_PANEL)
+    def was_item_successfully_added_to_cart(self):
+        popup_window = self.driver.find_element(*MainPageLocators.POPUP_PANEL)
+        text = popup_window.find_element(*MainPageLocators.POPUP_PANEL_CONFIRMATION).get_attribute("innerHTML")
+        data = [item.strip() for item in text.split("</i>")]
+        return "Product successfully added to your shopping cart" in data[1]
+
+    def proceed_to_checkout(self):
         proceed_to_checkout_button = wait(self.driver, 10).until(EC.element_to_be_clickable(MainPageLocators.PROCEED_TO_CHECKOUT_BUTTON))
         proceed_to_checkout_button.click()
 
-    def continueShopping(self):
-        popupWindow = self.driver.find_element(*MainPageLocators.POPUP_PANEL)
+    def continue_shopping(self):
         continue_shopping = wait(self.driver, 10).until(EC.element_to_be_clickable(MainPageLocators.CONTINUE_SHOPPING))
         continue_shopping.click()
-        
 
-    def addItemToCart(self, itemName ):
+    def add_item_to_cart(self, item_name):
         products = self.driver.find_elements(*MainPageLocators.ITEM_LIST)
         for product in products:
-            if itemName == product.find_element(*MainPageLocators.PRODUCT_NAME).get_attribute('title'):
-                action=ActionChains(self.driver)
+            if item_name == product.find_element(*MainPageLocators.PRODUCT_NAME).get_attribute('title'):
+                action = ActionChains(self.driver)
                 action.move_to_element(product).perform()
-                addToCartButton = wait(product, 10).until(EC.element_to_be_clickable(MainPageLocators.ADD_TO_CART_BUTTON))
-                addToCartButton.click()
+                wait(product, 10).until(EC.element_to_be_clickable(MainPageLocators.ADD_TO_CART_BUTTON)).click()
 
 
 class AuthenticationPage(BasePage):

@@ -16,8 +16,9 @@ driver.get("http://automationpractice.com")
 ITEM_TO_PURCAHSE = 'Blouse'
 
 main_page = page.MainPage(driver)
-main_page.click_signin_menu()
-# main_page.addItemToCart(ITEM_TO_PURCAHSE)
+# main_page.click_signin_menu()
+main_page.add_item_to_cart(settings.ITEM1_DESCRIPTION)
+print(main_page.was_item_successfully_added_to_cart())
 # main_page.proceedToCheckout()
         
 # shopping_cart_summary_page = page.ShoppingCartSummaryPage(driver)
@@ -29,13 +30,13 @@ main_page.click_signin_menu()
 # shopping_cart_summary_page.deleteItem(ITEM_TO_PURCAHSE)
 # shopping_cart_summary_page.click_checkout_button()
 
-auth_page = page.AuthenticationPage(driver)
-auth_page.email_address_input_element = settings.EMAIL_ADDRESS
-# auth_page.email_password_input_element = settings.EMAIL_PASSWORD
-auth_page.email_password_input_element = ""
-auth_page.click_signin_button()
-msg = auth_page.get_banner_alert_message()
-print(msg)
+# auth_page = page.AuthenticationPage(driver)
+# auth_page.email_address_input_element = settings.EMAIL_ADDRESS
+# # auth_page.email_password_input_element = settings.EMAIL_PASSWORD
+# auth_page.email_password_input_element = ""
+# auth_page.click_signin_button()
+# msg = auth_page.get_banner_alert_message()
+# print(msg)
 
 # auth_page.click_signin_button()
 
