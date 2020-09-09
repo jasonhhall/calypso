@@ -22,8 +22,8 @@ class LoginWorkFlow(unittest.TestCase):
         main_page.click_signin_menu()
         auth_page = page.AuthenticationPage(self.driver)
         assert auth_page.is_title_matches_auth_page()
-        auth_page.emailAddressInputElement = settings.EMAIL_ADDRESS
-        auth_page.emailPasswordInputElement = settings.EMAIL_PASSWORD
+        auth_page.email_address_input_element = settings.EMAIL_ADDRESS
+        auth_page.email_password_input_element = settings.EMAIL_PASSWORD
         auth_page.click_signin_button()
         assert auth_page.is_signout_visible()
         assert auth_page.is_user_account_visible()
@@ -35,8 +35,8 @@ class LoginWorkFlow(unittest.TestCase):
         main_page.click_signin_menu()
         auth_page = page.AuthenticationPage(self.driver)
         assert auth_page.is_title_matches_auth_page()
-        auth_page.emailAddressInputElement = "bademail@email.com"
-        auth_page.emailPasswordInputElement = "badpassword"
+        auth_page.email_address_input_element = "bademail@email.com"
+        auth_page.email_password_input_element = "badpassword"
         auth_page.click_signin_button()
         assert 'Authentication failed.' == auth_page.get_banner_alert_message()
 
@@ -46,8 +46,8 @@ class LoginWorkFlow(unittest.TestCase):
         main_page.click_signin_menu()
         auth_page = page.AuthenticationPage(self.driver)
         assert auth_page.is_title_matches_auth_page()
-        auth_page.emailAddressInputElement = settings.EMAIL_ADDRESS
-        auth_page.emailPasswordInputElement = ""
+        auth_page.email_address_input_element = settings.EMAIL_ADDRESS
+        auth_page.email_password_input_element = ""
         auth_page.click_signin_button()
         assert 'Password is required.' == auth_page.get_banner_alert_message()
 
@@ -57,8 +57,8 @@ class LoginWorkFlow(unittest.TestCase):
         main_page.click_signin_menu()
         auth_page = page.AuthenticationPage(self.driver)
         assert auth_page.is_title_matches_auth_page()
-        auth_page.emailAddressInputElement = ""
-        auth_page.emailPasswordInputElement = ""
+        auth_page.email_address_input_element = ""
+        auth_page.email_password_input_element = ""
         auth_page.click_signin_button()
         assert 'An email address required.' == auth_page.get_banner_alert_message()
 
@@ -68,11 +68,12 @@ class LoginWorkFlow(unittest.TestCase):
         main_page.click_signin_menu()
         auth_page = page.AuthenticationPage(self.driver)
         assert auth_page.is_title_matches_auth_page()
-        auth_page.emailAddressInputElement = settings.EMAIL_ADDRESS
-        auth_page.emailPasswordInputElement = settings.EMAIL_PASSWORD.swapcase()
+        auth_page.email_address_input_element = settings.EMAIL_ADDRESS
+        auth_page.email_password_input_element = settings.EMAIL_PASSWORD.swapcase()
         auth_page.click_signin_button()
         assert 'Authentication failed.' == auth_page.get_banner_alert_message()
 
     def tearDown(self):
+        time.sleep(5)
         self.driver.close()
 

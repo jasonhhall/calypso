@@ -14,29 +14,36 @@ driver = webdriver.Chrome(os.path.join(WEB_DRIVER_PATH, "chromedriver.exe"))
 driver.get("http://automationpractice.com")
 
 ITEM_TO_PURCAHSE = 'Blouse'
+
 main_page = page.MainPage(driver)
-main_page.addItemToCart(ITEM_TO_PURCAHSE)
-main_page.proceedToCheckout()
+main_page.click_signin_menu()
+# main_page.addItemToCart(ITEM_TO_PURCAHSE)
+# main_page.proceedToCheckout()
         
-shopping_cart_summary_page = page.ShoppingCartSummaryPage(driver)
+# shopping_cart_summary_page = page.ShoppingCartSummaryPage(driver)
 # shopping_cart_summary_page.increaseQuanityByOne(ITEM_TO_PURCAHSE)
 # price = shopping_cart_summary_page.getUnitPrice(ITEM_TO_PURCAHSE)
 # print(price)
 # total = shopping_cart_summary_page.getSubTotal(ITEM_TO_PURCAHSE)
 # print(total)
 # shopping_cart_summary_page.deleteItem(ITEM_TO_PURCAHSE)
-shopping_cart_summary_page.click_checkout_button()
+# shopping_cart_summary_page.click_checkout_button()
 
 auth_page = page.AuthenticationPage(driver)
 auth_page.email_address_input_element = settings.EMAIL_ADDRESS
-auth_page.email_password_input_element = settings.EMAIL_PASSWORD
+# auth_page.email_password_input_element = settings.EMAIL_PASSWORD
+auth_page.email_password_input_element = ""
 auth_page.click_signin_button()
+msg = auth_page.get_banner_alert_message()
+print(msg)
 
-address_page = page.AddressPage(driver)
+# auth_page.click_signin_button()
+
+# address_page = page.AddressPage(driver)
 # address_page.chooseDeliveryAddress('Office Address')
-address_page.useDeliveryAddressAsBillingAddress(True)
+# address_page.useDeliveryAddressAsBillingAddress(True)
 # print(address_page.hasChooseBillingAddressMenu())
-address_page.add_order_comment = "Please leave package on the porch"
+# address_page.add_order_comment = "Please leave package on the porch"
 
 # address_page.clickAddNewAddressButton()
 # address_page.new_address_firstname = "John"
@@ -68,28 +75,28 @@ address_page.add_order_comment = "Please leave package on the porch"
 # address_page.new_address_mobile_phone = "800-555-1111"
 # address_page.new_address_additional = "Email Address johndoe@test.com"
 # address_page.new_address_title = "HOME 2"
-address_page.proceedToCheckout()
+# address_page.proceedToCheckout()
 
-shipping_page = page.ShippingPage(driver)
-shipping_page.click_terms_of_service()
-shipping_page.click_checkout_button()
+# shipping_page = page.ShippingPage(driver)
+# shipping_page.click_terms_of_service()
+# shipping_page.click_checkout_button()
 # print(shipping_page.mustAgreeToTOSDisplay())
 
-payment_page = page.PaymentPage(driver)
-payment_page.payByBankWire()
-payment_page.chooseDifferntMethodOfPayment()
-payment_page.payByCheck()
-payment_page.confirmOrder()
+# payment_page = page.PaymentPage(driver)
+# payment_page.payByBankWire()
+# payment_page.chooseDifferntMethodOfPayment()
+# payment_page.payByCheck()
+# payment_page.confirmOrder()
 
-order_confirmation_page = page.OrderConfirmationPage(driver)
+# order_confirmation_page = page.OrderConfirmationPage(driver)
 # conf_num = order_confirmation_page.getOrderReferenceForBankWire()
-conf_num = order_confirmation_page.getOrderReferenceForCheck()
-print(conf_num)
+# conf_num = order_confirmation_page.getOrderReferenceForCheck()
+# print(conf_num)
 
-order_confirmation_page.backToOrders()
+# order_confirmation_page.backToOrders()
 
-order_history_page = page.OrderHistoryPage(driver)
-print(order_history_page.findOrder(conf_num))
+# order_history_page = page.OrderHistoryPage(driver)
+# print(order_history_page.findOrder(conf_num))
 
 
 

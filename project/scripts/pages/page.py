@@ -126,7 +126,8 @@ class AuthenticationPage(BasePage):
         return "An email address required." in self.driver.page_source
 
     def click_signin_button(self):
-        element = self.driver.find_element(*AuthenticationPageLocators.SIGN_IN_BUTTON)
+        element = wait(self.driver, 10).until(EC.element_to_be_clickable(AuthenticationPageLocators.SIGN_IN_BUTTON))
+        # self.driver.find_element(*AuthenticationPageLocators.SIGN_IN_BUTTON)
         element.click()
 
     def click_signout_button(self):
