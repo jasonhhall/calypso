@@ -13,12 +13,49 @@ WEB_DRIVER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "webd
 driver = webdriver.Chrome(os.path.join(WEB_DRIVER_PATH, "chromedriver.exe"))
 driver.get("http://automationpractice.com")
 
-ITEM_TO_PURCAHSE = 'Blouse'
+ITEM = 'Blouse'
 
 main_page = page.MainPage(driver)
 # main_page.click_signin_menu()
-main_page.add_item_to_cart(settings.ITEM1_DESCRIPTION)
-print(main_page.was_item_successfully_added_to_cart())
+main_page.add_item_to_cart(ITEM)
+main_page.proceed_to_checkout()
+shopping_cart_summary_page = page.ShoppingCartSummaryPage(driver)
+shopping_cart_summary_page.click_checkout_button()
+auth_page = page.AuthenticationPage(driver)
+auth_page.email_address_input_element = settings.EMAIL_ADDRESS
+auth_page.email_password_input_element = settings.EMAIL_PASSWORD
+auth_page.click_signin_button()
+address_page = page.AddressPage(driver)
+address_page.choose_delivery_address(settings.DELIVERY_ADDRESS_LABEL)
+address_page.use_delivery_address_as_billing_address(True)
+address_page.add_order_comment = settings.ORDER_COMMENT
+address_page.click_update_delivery_address()
+time.sleep(2)
+address_page.new_address_address1 = settings.HOME_ADDRESS1
+address_page.new_address_address2 = settings.HOME_ADDRESS2
+address_page.new_address_city = settings.HOME_CITY
+address_page.new_address_state(settings.HOME_STATE)
+address_page.new_address_postal_code = settings.POSTAL_CODE
+address_page.new_address_home_phone = settings.HOME_PHONE
+address_page.new_address_mobile_phone = settings.MOBILE_PHONE
+address_page.new_address_additional = settings.HOME_ADDITIONAL_INFO
+address_page.save_address()
+# print(address_page.verify_delivery_address(settings.HOME_ADDRESS1, settings.HOME_ADDRESS2, settings.HOME_CITY,
+#                                            settings.HOME_STATE, settings.POSTAL_CODE, settings.HOME_PHONE,
+#                                            settings.MOBILE_PHONE))
+#
+# print(address_page.verify_billing_address(settings.HOME_ADDRESS1, settings.HOME_ADDRESS2, settings.HOME_CITY,
+#                                           settings.HOME_STATE, settings.POSTAL_CODE, settings.HOME_PHONE,
+#                                           settings.MOBILE_PHONE))
+
+
+address_page.proceedToCheckout()
+shipping_page = page.ShippingPage(driver)
+shipping_page.click_terms_of_service()
+shipping_page.click_checkout_button()
+payment_page = page.PaymentPage(driver)
+print(payment_page.verify_order_details(ITEM, "$27.00", "2", 0))
+
 # main_page.proceedToCheckout()
         
 # shopping_cart_summary_page = page.ShoppingCartSummaryPage(driver)

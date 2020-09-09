@@ -10,6 +10,7 @@ from scripts.pages import page
 WEB_DRIVER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "webdrivers")
 sys.path.append(WEB_DRIVER_PATH)
 
+
 class LoginWorkFlow(unittest.TestCase):
 
     def setUp(self):

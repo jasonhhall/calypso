@@ -43,8 +43,10 @@ class AddressPageLocators(object):
     ADD_NEW_ADDRESS = (By.XPATH, '//*[@id="center_column"]/form/div/p/a')
     SAVE_ADDRESS = (By.ID, 'submitAddress')
     NEW_ADDRESS_STATE = (By.ID, 'id_state')
-    UPDATE_DELIVERY_ADDRESS = (By.CSS_SELECTOR , '#address_invoice li.address_update a')
-    UPDATE_BILLING_ADDRESS = (By.CSS_SELECTOR , '#address_invoice  li.address_update a')
+    UPDATE_DELIVERY_ADDRESS = (By.CSS_SELECTOR, '#address_invoice li.address_update a')
+    UPDATE_BILLING_ADDRESS = (By.CSS_SELECTOR, '#address_invoice  li.address_update a')
+    DELIVERY_ADDRESS_BOX = (By.XPATH, '//*[@id="address_delivery"]/li')
+    BILLING_ADDRESS_BOX = (By.XPATH, '//*[@id="address_invoice"]/li')
    
 
 class ShippingPageLocators(object):
@@ -55,11 +57,18 @@ class ShippingPageLocators(object):
 class PaymentPageLocators(object):
     PAY_BY_BANK_WIRE = (By.XPATH, '//*[@id="HOOK_PAYMENT"]/div[1]/div/p/a')
     PAY_BY_CHECK = (By.XPATH, '//*[@id="HOOK_PAYMENT"]/div[2]/div/p/a')
-    OTHER_PAYMENTS_METHODS = (By.XPATH, '//*[@id="cart_navigation"]/a')
+    ORDERS = (By.XPATH, '//*[@id="cart_summary"]/tbody/tr')
+    ORDER_DESCRIPTION = (By.XPATH, 'td[2]/p/a')
+    ORDER_UNIT_PRICE = (By.XPATH, 'td[4]/span/span')
+    ORDER_QTY = (By.XPATH, 'td[5]/span')
+    ORDER_TOTAL = (By.XPATH, 'td[6]/span')
+
+
 
 
 class OrderSummaryPageLocators(object):
     CONFIRM_ORDER = (By.XPATH, '//*[@id="cart_navigation"]/button')
+    OTHER_PAYMENTS_METHODS = (By.XPATH, '//*[@id="cart_navigation"]/a')
 
 
 class OrderConfirmationPageLocators(object):

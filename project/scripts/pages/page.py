@@ -150,6 +150,7 @@ class AuthenticationPage(BasePage):
         element = self.driver.find_element(*AuthenticationPageLocators.ALERT_BANNER)
         return element.text
 
+
 class ShoppingCartSummaryPage(BasePage):
 
     def is_title_matches_shopping_cart_summary_page(self):
@@ -191,8 +192,8 @@ class ShoppingCartSummaryPage(BasePage):
         if product_element:
             wait(product_element, 10).until(EC.element_to_be_clickable(ShoppingCartSummaryPageLocators.DELETE)).click()
 
-class AddressPage(BasePage):
 
+class AddressPage(BasePage):
     add_order_comment = OrderComment()
     new_address_firstname = NewAddressFirstName()
     new_address_lastname = NewAddressLastName()
@@ -200,7 +201,6 @@ class AddressPage(BasePage):
     new_address_address1 = NewAddressAddress1()
     new_address_address2 = NewAddressAddress2()
     new_address_city = NewAddressCity()
-   
     new_address_postal_code = NewAddressPostalCode()
     new_address_home_phone = NewAddressHomePhone()
     new_address_mobile_phone = NewAddressMobilePhone()
@@ -218,15 +218,15 @@ class AddressPage(BasePage):
         else:
             return True
 
-    def chooseDeliveryAddress(self, addressLabel):
+    def choose_delivery_address(self, address_label):
         select = Select(self.driver.find_element(*AddressPageLocators.DELIVERY_ADDRESS_DROP_DOWN))  
-        select.select_by_visible_text(addressLabel)
+        select.select_by_visible_text(address_label)
 
-    def newAddressState(self, stateName):
+    def new_address_state(self, state_name):
         select = Select(self.driver.find_element(*AddressPageLocators.NEW_ADDRESS_STATE))  
-        select.select_by_visible_text(stateName)
+        select.select_by_visible_text(state_name)
 
-    def useDeliveryAddressAsBillingAddress(self, bool_flag):
+    def use_delivery_address_as_billing_address(self, bool_flag):
         checkbox = self.driver.find_element(*AddressPageLocators.USE_SAME_ADDRESS)
         if checkbox.get_attribute("checked") == "true":
             if not bool_flag:
@@ -235,16 +235,43 @@ class AddressPage(BasePage):
     def clickAddNewAddressButton(self):
         self.driver.find_element(*AddressPageLocators.ADD_NEW_ADDRESS).click()
 
-    def saveAddress(self):
+    def save_address(self):
         self.driver.find_element(*AddressPageLocators.SAVE_ADDRESS).click()
 
-    def clickUpdateDeliveryAddress(self):
+    def click_update_delivery_address(self):
         self.driver.find_element(*AddressPageLocators.UPDATE_DELIVERY_ADDRESS).click()
 
     def clickUpdateBillingAddress(self):
         self.driver.find_element(*AddressPageLocators.UPDATE_BILLING_ADDRESS).click()
-        
-        
+
+    def verify_delivery_address(self, address1, address2, city, state, postal_code, h_phone, m_phone):
+        result = True
+        address_info = self.driver.find_elements(*AddressPageLocators.DELIVERY_ADDRESS_BOX)
+        full_street_address = address1 + " " + address2
+        if address_info[2].text != full_street_address.strip():
+            result = False
+        if address_info[3].text != city + ", " + state + " " + postal_code:
+            result = False
+        if address_info[5].text != h_phone:
+            result = False
+        if address_info[6].text != m_phone:
+            result = False
+        return result
+
+    def verify_billing_address(self, address1, address2, city, state, postal_code, h_phone, m_phone):
+        result = True
+        address_info = self.driver.find_elements(*AddressPageLocators.BILLING_ADDRESS_BOX)
+        full_street_address = address1 + " " + address2
+        if address_info[2].text != full_street_address.strip():
+            result = False
+        if address_info[3].text != city + ", " + state + " " + postal_code:
+            result = False
+        if address_info[5].text != h_phone:
+            result = False
+        if address_info[6].text != m_phone:
+            result = False
+        return result
+
 
 class ShippingPage(BasePage):
 
@@ -254,42 +281,66 @@ class ShippingPage(BasePage):
     def click_terms_of_service(self):
         self.driver.find_element(*ShippingPageLocators.TOS).click()
 
-    def mustAgreeToTOSDisplay(self):
+    def did_term_of_service_error_display(self):
         return "You must agree to the terms of service before continuing." in self.driver.page_source
 
+
 class PaymentPage(BasePage):
-    
-    def payByBankWire(self):
+    def pay_by_bank_wire(self):
         self.driver.find_element(*PaymentPageLocators.PAY_BY_BANK_WIRE).click()
 
-    def payByCheck(self):
+    def pay_by_check(self):
         wait(self.driver, 10).until(EC.element_to_be_clickable(PaymentPageLocators.PAY_BY_CHECK)).click()
 
-    def chooseDifferntMethodOfPayment(self):
-        self.driver.find_element(*PaymentPageLocators.OTHER_PAYMENTS_METHODS).click()
+    def verify_order_details(self, item_name, item_price, item_qty, item_index):
+        result = True
 
-   
+        orders = self.driver.find_elements(*PaymentPageLocators.ORDERS)
+        order = orders[item_index]
+        description = order.find_element(*PaymentPageLocators.ORDER_DESCRIPTION).text
+        unit_price = order.find_element(*PaymentPageLocators.ORDER_UNIT_PRICE).text
+        qty = order.find_element(*PaymentPageLocators.ORDER_QTY).text
+        total = order.find_element(*PaymentPageLocators.ORDER_TOTAL).text
+        # This produces a float number as a string rounded to two decimal points.
+        calculated_total = format(float(item_price.strip("$")) * int(item_qty), '.2f')
+        # print(calculated_total)
+        # print(format(calculated_total, '.2f'))
+
+        if item_name != description:
+            result = False
+        if item_price.strip("$") != unit_price.strip("$"):
+            result = False
+        if int(item_qty) != int(qty):
+            result = False
+        if calculated_total != total.strip("$"):
+            result = False
+        return result
+
 
 class OrderSummaryPage(BasePage):
-     def confirmOrder(self):
-        element = self.driver.find_element(*OrderSummaryPageLocators.CONFIRM_ORDER).click()
+    def confirmOrder(self):
+        self.driver.find_element(*OrderSummaryPageLocators.CONFIRM_ORDER).click()
+
+    def choose_different_method_of_payment(self):
+        self.driver.find_element(*PaymentPageLocators.OTHER_PAYMENTS_METHODS).click()
 
 
 class OrderConfirmationPage(BasePage):
     
     def getOrderReferenceForBankWire(self):
-        temp = self.driver.find_element(*OrderConforimationPageLocators.ORDER_BOX).get_attribute("innerHTML")
+        temp = self.driver.find_element(*OrderConfirmationPageLocators.ORDER_BOX).get_attribute("innerHTML")
         data = [item.strip() for item in temp.split("<br>")]
         return data[5].split()[-8]
 
     def getOrderReferenceForCheck(self):
-        temp = self.driver.find_element(*OrderConforimationPageLocators.ORDER_BOX).get_attribute("innerHTML")
+        temp = self.driver.find_element(*OrderConfirmationPageLocators.ORDER_BOX).get_attribute("innerHTML")
         data = [item.strip() for item in temp.split("<br>")]
         return data[3].split()[-1].strip('.')
     
 
     def backToOrders(self):
-        element = self.driver.find_element(*OrderConforimationPageLocators.BACK_TO_ORDERS).click()
+        element = self.driver.find_element(*OrderConfirmationPageLocators.BACK_TO_ORDERS).click()
+
 
 class OrderHistoryPage(BasePage):
 
