@@ -19,12 +19,11 @@ class ItemPurchaseWorkFlow(unittest.TestCase):
     def test_item_purchase(self):
         main_page = page.MainPage(self.driver)
         assert main_page.is_title_matches_main_page()
-        # main_page.addItemToCart('Faded Short Sleeve T-shirts')
-        main_page.addItemToCart('Blouse')
+        main_page.addItemToCart('Faded Short Sleeve T-shirts')
         main_page.proceedToCheckout()
+        
         shopping_cart_summary_page = page.ShoppingCartSummaryPage(self.driver)
         assert shopping_cart_summary_page.is_title_matches_shopping_cart_summary_page()
-        # assert shopping_cart_summary_page.getUnitPrice() =="$16.52"
         shopping_cart_summary_page.click_checkout_button()
 
         auth_page = page.AuthenticationPage(self.driver)

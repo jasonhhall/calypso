@@ -1,67 +1,67 @@
 import os
 import sys
 import time
-from selenium.webdriver.common.by import By
+import settings
+from scripts.pages import page
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.support.ui import WebDriverWait as wait
-from selenium.webdriver.support import expected_conditions as EC
-
+# from selenium.webdriver.common.action_chains import ActionChains
+# from selenium.webdriver.support.ui import WebDriverWait as wait
+# from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 WEB_DRIVER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "webdrivers")
-
 driver = webdriver.Chrome(os.path.join(WEB_DRIVER_PATH, "chromedriver.exe"))
 driver.get("http://automationpractice.com")
 
-def addItemToCart( driver, itemName):
-    elements = driver.find_elements(By.XPATH, '//*[@id="homefeatured"]/li')
-    for element in elements:
-        if itemName == element.find_element(By.CLASS_NAME, 'product-name').text:
-            # button = element.find_element(By.CLASS_NAME, 'ajax_add_to_cart_button')
-            # print(button.text)
-            # button.click()
-            # button.click()
-            action=ActionChains(driver)
-            action.move_to_element(element).perform()
-            addToCartButton = wait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'ajax_add_to_cart_button')))
-            addToCartButton.click()
-
+ITEM_TO_PURCAHSE = 'Printed Summer Dress'
+main_page = page.MainPage(driver)
+main_page.addItemToCart(ITEM_TO_PURCAHSE)
+main_page.proceedToCheckout()
         
-            # proceed_to_checkout = driver.find_element(By.CLASS_NAME, 'button-container')
-            # proceed_to_checkout_button  = wait(driver, 10).until(EC.element_to_be_clickable((By.TAG_NAME, 'a')))
+shopping_cart_summary_page = page.ShoppingCartSummaryPage(driver)
+shopping_cart_summary_page.increaseQuanityByOne(ITEM_TO_PURCAHSE)
+# price = shopping_cart_summary_page.getUnitPrice(ITEM_TO_PURCAHSE)
+# print(price)
+# total = shopping_cart_summary_page.getSubTotal(ITEM_TO_PURCAHSE)
+# print(total)
+# shopping_cart_summary_page.deleteItem(ITEM_TO_PURCAHSE)
+shopping_cart_summary_page.click_checkout_button()
+
+auth_page = page.AuthenticationPage(driver)
+auth_page.emailAddressInputElement = settings.EMAIL_ADDRESS
+auth_page.emailPasswordInputElement = settings.EMAIL_PASSWORD
+auth_page.click_signin_button()
+
+address_page = page.AddressPage(driver)
+address_page.chooseDeliveryAddress('Office Address')
+address_page.useDeliveryAddressAsBillingAddress(True)
+# print(address_page.hasChooseBillingAddressMenu())
+address_page.add_order_comment = "Please leave package on the porch"
+address_page.addNewAddress("FN", "LN", "C","123", address2="", city="City", state="Tennessee", zip="37013",homePhone="555-444-3333", mobilePhone="800-555-0000", AdditionalInfo="ADD", addressTitle="My Address")
+# address_page.click_checkout_button()
+
+# shipping_page = page.ShippingPage(driver)
+# shipping_page.click_terms_of_service()
+# shipping_page.click_checkout_button()
+
+# payment_page = page.PaymentPage(driver)
+# payment_page.payByBankWire()
+# payment_page.chooseDifferntMethodOfPayment()
+# payment_page.payByCheck()
+# payment_page.confirmOrder()
+
+# order_confirmation_page = page.OrderConfirmationPage(driver)
+# conf_num = order_confirmation_page.getOrderReference()
+# print(conf_num)
+
+# order_confirmation_page.backToOrders()
+
+# order_history_page = page.OrderHistoryPage(driver)
+# print(order_history_page.findOrder(conf_num))
 
 
-            # proceed_to_checkout_button  =  proceed_to_checkout.find_element(By.TAG_NAME, 'a')
-            # addToCartPopup = wait(driver, 10).until(EC.visibility_of_element_located((By.ID, 'layer_cart')))
-            # addToCartPopup.find_element(By.CLASS_NAME, 'continue')
-            # continue_shopping = addToCartPopup.find_element(By.CLASS_NAME, 'continue')
-            # continue_shopping.click()
-         
-            # proceed_to_checkout_button.click()
-          
-            # message = addToCartPopup.find_element(By.TAG_NAME, 'h2')
-            # print(message.text)
-           
-            
-            # continue_shopping.click()
-
-            # proceed_to_checkout = addToCartPopup.find_element(By.TAG_NAME, 'a')
-            # proceed_to_checkout.click()
 
 
 
-
-
-
-# for element in elements:
-#     element2 = element.find_element(By.CLASS_NAME, 'product-name')
-#     print(element2.text)
-
-# for element in elements:
-#     button = element.find_element(By.CLASS_NAME, 'ajax_add_to_cart_button')
-#     print(button.text)
-
-
-addItemToCart(driver, 'Faded Short Sleeve T-shirts')
 time.sleep(10)
 driver.close()

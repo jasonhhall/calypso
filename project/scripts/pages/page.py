@@ -1,23 +1,57 @@
 from scripts.element import BasePageElement
 from scripts.locators import MainPageLocators, AuthenticationPageLocators, ShoppingCartSummaryPageLocators, AddressPageLocators 
-from scripts.locators import ShippingPageLocators, PaymentPageLocators, OrderConforimationPageLocators
+from scripts.locators import ShippingPageLocators, PaymentPageLocators, OrderConforimationPageLocators, OrderHistoryPageLocators
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait as wait
+from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import time
 
-
 class EmailAddressInputElement(BasePageElement):
     locator = 'email'
-
 
 class EmailPasswordInputElement(BasePageElement):
     locator = 'passwd'
 
-class AlertBanner(BasePageElement):
-    locator = '#center_column > div.alert.alert-danger > p'
+class OrderComment(BasePageElement):
+    locator = 'message'
 
+class NewAddressFirstName(BasePageElement):
+    locator = 'firstname'
+
+class NewAddressLastName(BasePageElement):
+    locator = 'lastname'
+
+class NewAddressCompany(BasePageElement):
+    locator = 'company'
+
+class NewAddressAddress1(BasePageElement):
+    locator = 'address1'
+
+class NewAddressAddress2(BasePageElement):
+    locator = 'address2'
+
+class NewAddressCity(BasePageElement):
+    locator = 'city'
+
+class NewAddressState(BasePageElement):
+    locator = 'id_state'
+
+class NewAddressPostalCode(BasePageElement):
+    locator = 'postcode'
+
+class NewAddressHomePhone(BasePageElement):
+    locator = 'phone'
+
+class NewAddressMobilePhone(BasePageElement):
+    locator = 'phone_mobile'
+
+class NewAddressAdditional(BasePageElement):
+    locator = 'other'
+
+class NewAddressTitle(BasePageElement):
+    locator = 'alias'
 
 class BasePage(object):
     """Base class to initialize the base page that will be called from all pages"""
@@ -59,10 +93,10 @@ class MainPage(BasePage):
     def addItemToCart(self, itemName ):
         products = self.driver.find_elements(*MainPageLocators.ITEM_LIST)
         for product in products:
-            if itemName == product.find_element(*MainPageLocators.PRODUCT_NAME).text:
+            if itemName == product.find_element(*MainPageLocators.PRODUCT_NAME).get_attribute('title'):
                 action=ActionChains(self.driver)
                 action.move_to_element(product).perform()
-                addToCartButton = wait(self.driver, 10).until(EC.element_to_be_clickable(MainPageLocators.ADD_TO_CART_BUTTON))
+                addToCartButton = wait(product, 10).until(EC.element_to_be_clickable(MainPageLocators.ADD_TO_CART_BUTTON))
                 addToCartButton.click()
 
 
@@ -111,28 +145,91 @@ class ShoppingCartSummaryPage(BasePage):
     def is_title_matches_shopping_cart_summary_page(self):
         return "Order - My Store" in self.driver.title
 
-    # def getUnitPrice(self):
-    #     element = self.driver.find_element(*ShoppingCartSummaryPageLocators.UNIT_PRICE)
-    #     return element.text
+    def getProductFromSummaryPage(self, productName):
+        products = self.driver.find_elements(*ShoppingCartSummaryPageLocators.PRODUCTS)
+
+        for product in products:
+            product_description = product.find_element(*ShoppingCartSummaryPageLocators.PRODUCT_NAME).text
+            if product_description == productName:
+                return product
+        return None
+
+    def getUnitPrice(self, productName):
+        product_element = self.getProductFromSummaryPage(productName)
+        if product_element:
+            return product_element.find_element(*ShoppingCartSummaryPageLocators.UNIT_PRICE).text
+        else:
+            return "Product was not found"
+
+    def getSubTotal(self, productName):
+        product_element = self.getProductFromSummaryPage(productName)
+        if product_element:
+            return product_element.find_element(*ShoppingCartSummaryPageLocators.SUBTOTAL).text
+        else:
+            return "Product was not found"
 
     def click_checkout_button(self):
-        element = self.driver.find_element(*ShoppingCartSummaryPageLocators.PROCEED_TO_CHECKOUT_BUTTON)
-        element.click()
+        self.driver.find_element(*ShoppingCartSummaryPageLocators.PROCEED_TO_CHECKOUT_BUTTON).click()
+
+    def increaseQuanityByOne(self, productName):
+        product_element = self.getProductFromSummaryPage(productName)
+        if product_element:
+            wait(product_element, 10).until(EC.element_to_be_clickable(ShoppingCartSummaryPageLocators.INCREASE_QTY)).click()
+
+    def deleteItem(self, productName):
+        product_element = self.getProductFromSummaryPage(productName)
+        if product_element:
+            wait(product_element, 10).until(EC.element_to_be_clickable(ShoppingCartSummaryPageLocators.DELETE)).click()
 
 class AddressPage(BasePage):
 
-    def click_checkout_button(self):
-        element = self.driver.find_element(*AddressPageLocators.PROCEED_TO_CHECKOUT_BUTTON)
-        element.click()
+    add_order_comment = OrderComment()
+
+    def proceedToCheckout(self):
+        self.driver.find_element(*AddressPageLocators.PROCEED_TO_CHECKOUT_BUTTON).click()
+
+    def hasChooseBillingAddressMenu(self):
+        self.driver.implicitly_wait(3)
+        billing_address = self.driver.find_element(*AddressPageLocators.BILLING_ADDRESS_FORM)
+        if billing_address.get_attribute("style") == 'display: none;':
+            return False
+        else:
+            return True
+
+    def chooseDeliveryAddress(self, addressLabel):
+        select = Select(self.driver.find_element(*AddressPageLocators.DELIVERY_ADDRESS_DROP_DOWN))  
+        select.select_by_visible_text(addressLabel)
+
+    def useDeliveryAddressAsBillingAddress(self, bool_flag):
+        checkbox = self.driver.find_element(*AddressPageLocators.USE_SAME_ADDRESS)
+        if checkbox.get_attribute("checked") == "true":
+            if not bool_flag:
+                checkbox.click()
+
+    # def getDeliveryAddress(self):
+
+    # def getDeliveryCityStateZip(self):
+
+    # def getDeliveryCountry(self):
+
+    # def updateDeliveryAddress(self):
+    
+    def addNewAddress(self, firstName, lastName, company,address1, address2, city, state, zip, homePhone, mobilePhone, AdditionalInfo, addressTitle):
+        # if homePhone :
+        #     if mobilePhone:
+        #         raise Exception("You must register at least one phone number.") 
+        self.driver.find_element(*AddressPageLocators.ADD_NEW_ADDRESS).click()
+        
+    
+
 
 class ShippingPage(BasePage):
 
     def click_checkout_button(self):
-        element = self.driver.find_element(*ShippingPageLocators.PROCEED_TO_CHECKOUT_BUTTON).click()
+        self.driver.find_element(*ShippingPageLocators.PROCEED_TO_CHECKOUT_BUTTON).click()
 
     def click_terms_of_service(self):
-        element = self.driver.find_element(*ShippingPageLocators.TOS)
-        element.click()
+        self.driver.find_element(*ShippingPageLocators.TOS).click()
 
 class PaymentPage(BasePage):
     
@@ -150,10 +247,24 @@ class PaymentPage(BasePage):
 
 class OrderConfirmationPage(BasePage):
     
-    # def getOrderReference(self):
-    #     element = self.driver.find_element(*OrderConforimationPageLocators.ORDER_CONFRIMATION_MESSAGE)
-    #     return element.text
+    def getOrderReference(self):
+        temp = self.driver.find_element(*OrderConforimationPageLocators.ORDER_BOX).get_attribute("innerHTML")
+        data = [item.strip() for item in temp.split("<br>")]
+        return data[3].split()[-1].strip('.')
+    
 
     def backToOrders(self):
         element = self.driver.find_element(*OrderConforimationPageLocators.BACK_TO_ORDERS).click()
+
+class OrderHistoryPage(BasePage):
+
+    def findOrder(self, orderReference):
+        found = False
+        orders_reference = self.driver.find_elements(*OrderHistoryPageLocators.ORDERS_REF_LIST)
+        for order in orders_reference:
+            if orderReference == order.text:
+                found =  True
+        return found
+
+
 

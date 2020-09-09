@@ -22,10 +22,23 @@ class ShoppingCartSummaryPageLocators(object):
     PROCEED_TO_CHECKOUT_BUTTON = (By.XPATH, '//*[@id="center_column"]/p[2]/a[1]')
     DELETE_ITEM = (By.XPATH, '//*[@id="cart_summary"]/tbody/tr/td[7]')
     QTY = (By.XPATH, '//*[@id="cart_summary"]/tbody/tr/td[5]')
+    PRODUCTS = (By.XPATH, '//*[@id="cart_summary"]/tbody/tr')
+    PRODUCT_NAME = (By.XPATH, 'td[2]/p/a')
+    UNIT_PRICE = (By.CLASS_NAME, 'price')
+    SUBTOTAL = (By.XPATH, 'td[6]/span')
+    DELETE = (By.XPATH, 'td[7]/div/a')
+    INCREASE_QTY = (By.XPATH, 'td[5]/div/a[2]')
 
 
 class AddressPageLocators(object):
     PROCEED_TO_CHECKOUT_BUTTON = (By.NAME, 'processAddress')
+    DELIVERY_ADDRESS_DROP_DOWN = (By.ID, 'id_address_delivery')
+    BILLING_ADDRESS_DROP_DOWN = (By.ID, 'id_address_invoice')
+    BILLING_ADDRESS_FORM = (By.ID, 'address_invoice_form')
+    USE_SAME_ADDRESS = (By.ID, 'addressesAreEquals')
+    ORDER_MESSAGE = (By.XPATH, '//*[@id="ordermsg"]/textarea')
+    ADD_NEW_ADDRESS = (By.XPATH, '//*[@id="center_column"]/form/div/p/a')
+   
 
 class ShippingPageLocators(object):
     PROCEED_TO_CHECKOUT_BUTTON = (By.NAME, 'processCarrier')
@@ -39,4 +52,9 @@ class PaymentPageLocators(object):
 
 class OrderConforimationPageLocators(object):
     BACK_TO_ORDERS = (By.XPATH, '//*[@id="center_column"]/p/a')
+    ORDER_BOX = (By.XPATH, '//*[@id="center_column"]/div')
+
+
+class OrderHistoryPageLocators(object):
+    ORDERS_REF_LIST = (By.XPATH, '//*[@id="order-list"]/tbody/tr/td[1]/a')
 
