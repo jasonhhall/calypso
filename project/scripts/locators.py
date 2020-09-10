@@ -7,11 +7,17 @@ class MainPageLocators(object):
     ITEM_LIST = (By.XPATH, '//*[@id="homefeatured"]/li')
     PRODUCT_NAME = (By.CLASS_NAME, 'product-name')
     ADD_TO_CART_BUTTON = (By.CLASS_NAME, 'ajax_add_to_cart_button')
+    MORE_BUTTON = (By.CLASS_NAME, 'lnk_view')
     POPUP_PANEL = (By.ID, 'layer_cart')
     POPUP_PANEL_CONFIRMATION = (By.XPATH, 'div[1]/div[1]/h2')
-    # CONFIRMATION = (By.XPATH, '//*[@id="layer_cart"]/div[1]/div[1]/h2')
     PROCEED_TO_CHECKOUT_BUTTON = (By.XPATH, '//*[@id="layer_cart"]/div[1]/div[2]/div[4]/a')
     CONTINUE_SHOPPING = (By.XPATH, '//*[@id="layer_cart"]/div[1]/div[2]/div[4]/span')
+
+
+# class MoreInfoPageLocators(object):
+#     INCREASE_QTY = (By.XPATH, '//*[@id="quantity_wanted_p"]/a[2]')
+#     SIZE_DROP_DOWN = (By.ID, 'group_1')
+#     ADD_TO_CART_BUTTON = (By.XPATH, '//*[@id="add_to_cart"]/button')
 
 
 class AuthenticationPageLocators(object):
@@ -62,8 +68,6 @@ class PaymentPageLocators(object):
     ORDER_UNIT_PRICE = (By.XPATH, 'td[4]/span/span')
     ORDER_QTY = (By.XPATH, 'td[5]/span')
     ORDER_TOTAL = (By.XPATH, 'td[6]/span')
-
-
 
 
 class OrderSummaryPageLocators(object):

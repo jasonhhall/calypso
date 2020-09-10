@@ -5,8 +5,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-import time
+
 
 
 class EmailAddressInputElement(BasePageElement):
@@ -111,7 +110,6 @@ class MainPage(BasePage):
                 action.move_to_element(product).perform()
                 wait(product, 10).until(EC.element_to_be_clickable(MainPageLocators.ADD_TO_CART_BUTTON)).click()
 
-
 class AuthenticationPage(BasePage):
     email_address_input_element = EmailAddressInputElement()
     email_password_input_element = EmailPasswordInputElement()
@@ -156,24 +154,23 @@ class ShoppingCartSummaryPage(BasePage):
     def is_title_matches_shopping_cart_summary_page(self):
         return "Order - My Store" in self.driver.title
 
-    def getProductFromSummaryPage(self, productName):
+    def get_product_from_summary_page(self, product_name):
         products = self.driver.find_elements(*ShoppingCartSummaryPageLocators.PRODUCTS)
-
         for product in products:
             product_description = product.find_element(*ShoppingCartSummaryPageLocators.PRODUCT_NAME).text
-            if product_description == productName:
+            if product_description == product_name:
                 return product
         return None
 
-    def getUnitPrice(self, productName):
-        product_element = self.getProductFromSummaryPage(productName)
+    def get_unit_price(self, product_name):
+        product_element = self.get_product_from_summary_page(product_name)
         if product_element:
             return product_element.find_element(*ShoppingCartSummaryPageLocators.UNIT_PRICE).text
         else:
             return "Product was not found"
 
-    def getSubTotal(self, productName):
-        product_element = self.getProductFromSummaryPage(productName)
+    def get_sub_total(self, product_name):
+        product_element = self.get_product_from_summary_page(product_name)
         if product_element:
             return product_element.find_element(*ShoppingCartSummaryPageLocators.SUBTOTAL).text
         else:
@@ -182,13 +179,13 @@ class ShoppingCartSummaryPage(BasePage):
     def click_checkout_button(self):
         self.driver.find_element(*ShoppingCartSummaryPageLocators.PROCEED_TO_CHECKOUT_BUTTON).click()
 
-    def increaseQuanityByOne(self, productName):
-        product_element = self.getProductFromSummaryPage(productName)
+    def increase_quantity_by_one(self, product_name):
+        product_element = self.get_product_from_summary_page(product_name)
         if product_element:
             wait(product_element, 10).until(EC.element_to_be_clickable(ShoppingCartSummaryPageLocators.INCREASE_QTY)).click()
 
-    def deleteItem(self, productName):
-        product_element = self.getProductFromSummaryPage(productName)
+    def delete_item_from_cart(self, product_name):
+        product_element = self.get_product_from_summary_page(product_name)
         if product_element:
             wait(product_element, 10).until(EC.element_to_be_clickable(ShoppingCartSummaryPageLocators.DELETE)).click()
 
@@ -207,10 +204,10 @@ class AddressPage(BasePage):
     new_address_additional = NewAddressAdditional()
     new_address_title = NewAddressTitle()
 
-    def proceedToCheckout(self):
+    def proceed_to_checkout(self):
         self.driver.find_element(*AddressPageLocators.PROCEED_TO_CHECKOUT_BUTTON).click()
 
-    def hasChooseBillingAddressMenu(self):
+    def has_choose_billing_address_drop_down_menu(self):
         self.driver.implicitly_wait(3)
         billing_address = self.driver.find_element(*AddressPageLocators.BILLING_ADDRESS_FORM)
         if billing_address.get_attribute("style") == 'display: none;':
@@ -232,7 +229,7 @@ class AddressPage(BasePage):
             if not bool_flag:
                 checkbox.click()
     
-    def clickAddNewAddressButton(self):
+    def click_add_new_address_button(self):
         self.driver.find_element(*AddressPageLocators.ADD_NEW_ADDRESS).click()
 
     def save_address(self):
@@ -241,7 +238,7 @@ class AddressPage(BasePage):
     def click_update_delivery_address(self):
         self.driver.find_element(*AddressPageLocators.UPDATE_DELIVERY_ADDRESS).click()
 
-    def clickUpdateBillingAddress(self):
+    def click_update_billing_address(self):
         self.driver.find_element(*AddressPageLocators.UPDATE_BILLING_ADDRESS).click()
 
     def verify_delivery_address(self, address1, address2, city, state, postal_code, h_phone, m_phone):
@@ -303,8 +300,6 @@ class PaymentPage(BasePage):
         total = order.find_element(*PaymentPageLocators.ORDER_TOTAL).text
         # This produces a float number as a string rounded to two decimal points.
         calculated_total = format(float(item_price.strip("$")) * int(item_qty), '.2f')
-        # print(calculated_total)
-        # print(format(calculated_total, '.2f'))
 
         if item_name != description:
             result = False
@@ -318,7 +313,7 @@ class PaymentPage(BasePage):
 
 
 class OrderSummaryPage(BasePage):
-    def confirmOrder(self):
+    def confirm_order(self):
         self.driver.find_element(*OrderSummaryPageLocators.CONFIRM_ORDER).click()
 
     def choose_different_method_of_payment(self):
@@ -327,28 +322,27 @@ class OrderSummaryPage(BasePage):
 
 class OrderConfirmationPage(BasePage):
     
-    def getOrderReferenceForBankWire(self):
+    def get_order_reference_for_bank_wire(self):
         temp = self.driver.find_element(*OrderConfirmationPageLocators.ORDER_BOX).get_attribute("innerHTML")
         data = [item.strip() for item in temp.split("<br>")]
         return data[5].split()[-8]
 
-    def getOrderReferenceForCheck(self):
+    def get_order_reference_for_check(self):
         temp = self.driver.find_element(*OrderConfirmationPageLocators.ORDER_BOX).get_attribute("innerHTML")
         data = [item.strip() for item in temp.split("<br>")]
         return data[3].split()[-1].strip('.')
-    
 
-    def backToOrders(self):
-        element = self.driver.find_element(*OrderConfirmationPageLocators.BACK_TO_ORDERS).click()
+    def back_to_orders(self):
+        self.driver.find_element(*OrderConfirmationPageLocators.BACK_TO_ORDERS).click()
 
 
 class OrderHistoryPage(BasePage):
 
-    def findOrder(self, orderReference):
+    def find_order(self, order_reference):
         found = False
         orders_reference = self.driver.find_elements(*OrderHistoryPageLocators.ORDERS_REF_LIST)
         for order in orders_reference:
-            if orderReference == order.text:
+            if order_reference == order.text:
                 found =  True
         return found
 
