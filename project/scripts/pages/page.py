@@ -1,11 +1,10 @@
-from scripts.element import BasePageElement
-from scripts.locators import MainPageLocators, AuthenticationPageLocators, ShoppingCartSummaryPageLocators, AddressPageLocators 
-from scripts.locators import ShippingPageLocators, PaymentPageLocators, OrderConfirmationPageLocators, OrderHistoryPageLocators, OrderSummaryPageLocators
+from project.scripts.element import BasePageElement
+from project.scripts.locators import MainPageLocators, AuthenticationPageLocators, ShoppingCartSummaryPageLocators, AddressPageLocators
+from project.scripts.locators import ShippingPageLocators, PaymentPageLocators, OrderConfirmationPageLocators, OrderHistoryPageLocators, OrderSummaryPageLocators
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
-
 
 
 class EmailAddressInputElement(BasePageElement):
@@ -109,6 +108,7 @@ class MainPage(BasePage):
                 action = ActionChains(self.driver)
                 action.move_to_element(product).perform()
                 wait(product, 10).until(EC.element_to_be_clickable(MainPageLocators.ADD_TO_CART_BUTTON)).click()
+
 
 class AuthenticationPage(BasePage):
     email_address_input_element = EmailAddressInputElement()

@@ -2,10 +2,9 @@ import os
 import sys
 import time
 import unittest
-import pytest
-import settings
+from project import settings
 from selenium import webdriver
-from scripts.pages import page
+from project.scripts.pages import page
 
 WEB_DRIVER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "webdrivers")
 sys.path.append(WEB_DRIVER_PATH)
